@@ -3,6 +3,6 @@ export interface Post {
   description: string
   publishDate: string
   id: string
-  featureImage: string
+  featuredImage: string
   published: boolean
 }
