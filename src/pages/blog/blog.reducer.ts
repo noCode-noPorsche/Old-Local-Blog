@@ -1,4 +1,4 @@
-import { createAction, createReducer } from '@reduxjs/toolkit'
+import { createAction, createReducer, current } from '@reduxjs/toolkit'
 import { initalPostList } from 'constants/blog'
 import { Post } from 'types/blog.type'
 
@@ -27,16 +27,18 @@ const blogReducer = createReducer(initalState, (builder) => {
       state.postList.push(post)
     })
     .addCase(deletePost, (state, action) => {
+      console.log('start>>>>>>>>>>>>>', current(state))
       const postId = action.payload
-      const fountPostIndex = state.postList.findIndex((post) => post.id === postId)
-      if (fountPostIndex != -1) {
-        state.postList.splice(fountPostIndex, 1)
+      const foundPostIndex = state.postList.findIndex((post) => post.id === postId)
+      if (foundPostIndex != -1) {
+        state.postList.splice(foundPostIndex, 1)
       }
+      console.log('finish>>>>>>>>>>>>>', current(state))
     })
     .addCase(startEditingPost, (state, action) => {
       const postId = action.payload
-      const fountPost = state.postList.find((post) => post.id === postId) || null
-      state.editingPost = fountPost
+      const foundPost = state.postList.find((post) => post.id === postId) || null
+      state.editingPost = foundPost
     })
     .addCase(cancelEditingPost, (state) => {
       state.editingPost = null
@@ -52,6 +54,12 @@ const blogReducer = createReducer(initalState, (builder) => {
       })
       state.editingPost = null
     })
+    .addMatcher(
+      (action) => action.type.includes('cancel'),
+      (state, action) => {
+        console.log(current(state))
+      }
+    )
 })
 
 export default blogReducer
